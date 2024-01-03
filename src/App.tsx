@@ -9,31 +9,70 @@ function App() {
 
   let [userClickerd, updateUserClicked] = useState(false)
   function addUser(userId, userName, emailId, mobileNo, address) {
-    if (userId === null || userName === null || emailId === null || mobileNo === null || addUser === null) {
+    const validateEmail = (email) => {
+      return email.match(
+        /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+    };
+    if (userId === null || userName === null || emailId === null || mobileNo === null || address === null) {
       alert("Please Fill All Fields")
     }
     else {
-      users.unshift({
-        "sno": 0,
-        "userId": userId,
-        "userName": userName,
-        "email": emailId,
-        "mobileNo": mobileNo,
-        "address": address
-      })
-      users.map((user, index) => {
-        user.sno = index+1
-      })
-      updateAllUsers(users)
-      updateSelectedRows(2)
+      if(userId.length >= 5){
+        if(userName.length >= 5){
+          if(/\S+@\S+\.\S+/.test(emailId)){
+            if(/^\d{10}$/.test(mobileNo)){
+              if(address.length>=10 ){
+                users.unshift({
+                  "sno": 0,
+                  "userId": userId,
+                  "userName": userName,
+                  "email": emailId,
+                  "mobileNo": mobileNo,
+                  "address": address
+                })
+                users.map((user, index) => {
+                  user.sno = index + 1
+                })
+                updateAllUsers(users)
+                updateSelectedRows(2)
+                updateFrom(0)
+                updateUserClicked(false)
 
-      updateFrom(0)
-      updateUserClicked(false)
+              }
+              else{
+                alert("please Enter a Valid Address")
+              }
+
+
+            }
+            else{
+              alert("please Enter a Valid mobile Number")
+            }
+
+          }
+          else{
+            alert("please Enter Valid Email")
+          }
+
+        }
+        else{
+          alert("user Name Should Be 5 Charecters")
+        }
+
+      }
+      else{
+        alert("userId Should Be 5 Charecters")
+      }
+
+
+
+      
 
     }
   }
   return (
-    userClickerd === true ? <AddUser addUser={addUser} /> : <HomePage updateAllUsers={updateAllUsers}
+    userClickerd === true ? <AddUser addUser={addUser} updateUserClicked={updateUserClicked} /> : <HomePage updateAllUsers={updateAllUsers}
       allUsers={allUsers} updateUserClicked={updateUserClicked} from={from} seeableUsers={seeableUsers} selectedRows={selectedRows}
       updateFrom={updateFrom} updateSeeableUsers={updateSeeableUsers} updateSelectedRows={updateSelectedRows} />
   )
@@ -41,8 +80,7 @@ function App() {
 export default App;
 
 
-function AddUser({ addUser }) {
-
+function AddUser({ addUser, updateUserClicked }) {
   let [userId, updateUserId] = useState(null)
   let [userName, updateUserName] = useState(null)
   let [emailId, updateEmailId] = useState(null)
@@ -50,31 +88,38 @@ function AddUser({ addUser }) {
   let [address, updateAddress] = useState(null)
   return (
     <>
-    <div className="fixed w-[100vw] h-[100vh ">
-      <img src="https://play.tailwindcss.com/img/beams.jpg" className="object-cover w-[100vw] h-[100vh]"/>
-    </div>
-    <main className="w-full relative flex justify-center items-center">
-      <div className=" shadowFull w-[80vw] lg:w-[40vw] h-fit flex flex-col justify-center items-center mt-10 pb-10  rounded-lg">
-      <div className="flex items-start justify-start mt-[2vh]">
-          <label className="text-2xl">User Form</label>
-        </div>
-        <section className=" flex justify-center items-center  h-fit mt-[2vh]">
-          <div className="mt-4  flex flex-col space-y-6  pb-10 pl-4 pr-4">
-            <TextField value={"User Id"} state={updateUserId} />
-            <TextField value={"User Name"} state={updateUserName} />
-            <TextField value={"Email Id"} state={updateEmailId} />
-            <TextField value={"Mobile No"} state={updateMobileNo} />
-            <TextField value={"Address"} state={updateAddress} />
-          </div>
-        </section>
-        <div className="w-full flex items-center text-center justify-center">
-          <div onClick={() => {
-            addUser(userId, userName, emailId, mobileNo, address)
-          }}
-            className="h-fit w-fit px-10 py-2 text-lg bg-blue-500 text-white shadow-lg rounded-lg cursor-pointer">Add User</div>
-        </div>
+      <div className="fixed w-[100vw] h-[100vh ">
+        <img src="https://play.tailwindcss.com/img/beams.jpg" className="object-cover w-[100vw] h-[100vh]" />
       </div>
-    </main></>
+      <main className="w-full relative flex justify-center items-center">
+        <div className=" shadowFull w-[80vw] lg:w-[40vw] h-fit flex flex-col justify-center items-center mt-10 pb-10  rounded-lg">
+          <div className="w-full flex justify-between items-center pl-[6vw] pr-[2vw] mt-1">
+            <div className="flex items-start justify-start mt-[2vh]">
+              <label className="text-2xl">User Form</label>
+            </div>
+            <div onClick={() => {
+              updateUserClicked(false)
+            }} className=" w-8 h-8 rounded-full border border-zinc-700 text-2xl text-center
+          flex items-center justify-center pb-2 mt-2 cursor-pointer">x</div>
+          </div>
+
+          <section className=" flex justify-center items-center  h-fit mt-[2vh]">
+            <div className="mt-4  flex flex-col space-y-6  pb-10 pl-4 pr-4">
+              <TextField value={"User Id"} state={updateUserId} />
+              <TextField value={"User Name"} state={updateUserName} />
+              <TextField value={"Email Id"} state={updateEmailId} />
+              <TextField value={"Mobile No"} state={updateMobileNo} />
+              <TextField value={"Address"} state={updateAddress} />
+            </div>
+          </section>
+          <div className="w-full flex items-center text-center justify-center">
+            <div onClick={() => {
+              addUser(userId, userName, emailId, mobileNo, address)
+            }}
+              className="h-fit w-fit px-10 py-2 text-lg bg-blue-500 text-white shadow-lg rounded-lg cursor-pointer">Add User</div>
+          </div>
+        </div>
+      </main></>
   )
 }
 function TextField({ value, state }) {
@@ -89,63 +134,63 @@ function TextField({ value, state }) {
 function HomePage({ from, updateSelectedRows, updateFrom, selectedRows,
   updateSeeableUsers, seeableUsers, updateUserClicked, allUsers,
   updateAllUsers }) {
-  let [justFor, updatejustFor] = useState(0)
-  useEffect(() => {
-    updateFrom(0)
-    updatejustFor(1)
+  let [searchText, updateSearchText] = useState(null)
+  let [totalUsers, updateTotalUsers] = useState(allUsers)
+  let [recordData, updateRecordData] = useState([])
+  var loopNumber = from
 
-  }, [allUsers])
-
-  useEffect(() => {
-    next()
-  }, [allUsers, selectedRows])
-
+  /**
+   * 
+   * search function 
+   */
   function search() {
     let emptyArray = []
     users.map((user) => {
-      if (user.userName.includes(searchText) ||
-        user.email.includes(searchText)
-        || user.mobileNo.includes(searchText)) {
+      if ((user.userName.toLowerCase()).includes(searchText.toLowerCase()) ||
+        (user.email.toLowerCase()).includes(searchText.toLowerCase())
+        || (user.mobileNo.toLowerCase()).includes(searchText.toLowerCase())) {
         emptyArray.push(user)
       }
     })
     if (emptyArray.length >= 1) {
       updateAllUsers(emptyArray)
       updateFrom(0)
-      updatejustFor(1)
     }
     else {
       alert("Data Not Found")
     }
   }
-  let [searchText, updateSearchText] = useState(null)
-  var loopNumber = from
-  function updateselectedrows() {
-    let selected = document.getElementById("selectRows") as HTMLSelectElement;
-    updateSelectedRows(Number(selected.value))
-    updateFrom(0)
-  }
-  function next() {
-    let emptyArray = []
-    loopNumber = from
-    if (loopNumber < allUsers.length - selectedRows) {
-      while (loopNumber < from + selectedRows && from + selectedRows <= allUsers.length) {
-        emptyArray.push(allUsers[loopNumber])
-        loopNumber = loopNumber + 1
+    /**
+     * 
+     * next function 
+     */
+    function next() {
+      let emptyArray = []
+      loopNumber = from
+      if (loopNumber < allUsers.length - selectedRows) {
+        while (loopNumber < from + selectedRows && from + selectedRows <= allUsers.length) {
+          emptyArray.push(allUsers[loopNumber])
+          loopNumber = loopNumber + 1
+        }
+        updateSeeableUsers(emptyArray)
+        updateFrom(from + selectedRows)
       }
-      updateSeeableUsers(emptyArray)
-      updateFrom(from + selectedRows)
-    }
-    else if (loopNumber < allUsers.length) {
-      emptyArray = []
-      while (loopNumber < allUsers.length) {
-        emptyArray.push(allUsers[loopNumber])
-        loopNumber = loopNumber + 1
+      else if (loopNumber < allUsers.length) {
+        emptyArray = []
+        while (loopNumber < allUsers.length) {
+          emptyArray.push(allUsers[loopNumber])
+          loopNumber = loopNumber + 1
+        }
+        updateSeeableUsers(emptyArray)
+        updateFrom(from + selectedRows)
       }
-      updateSeeableUsers(emptyArray)
-      updateFrom(from + selectedRows)
     }
-  }
+  
+
+  /**
+     * 
+     * previous function 
+     */
   function prev() {
     let emptyArray = []
     loopNumber = from - selectedRows - selectedRows //2
@@ -158,18 +203,94 @@ function HomePage({ from, updateSelectedRows, updateFrom, selectedRows,
       updateFrom(from - selectedRows)
     }
   }
+/**
+ * 
+ * recordNumber
+ */
+  function getRecordNumber() {
+    let emptyArray = []
+    let totalRecordsNumber = Math.ceil(totalUsers.length / selectedRows)
+    var a = 1
+    if (totalRecordsNumber == Infinity) { }
+    else {
+      while (a <= Number(totalRecordsNumber)) {
+        let object = {
+          "value": a,
+        }
+        emptyArray.push(object)
+        a = a + 1
+      }
+    }
+    updateRecordData(emptyArray)
+
+
+  }
+  /**
+      * 
+      * for updating rows in client side 
+      */
+  function updateselectedrows() {
+    let selected = document.getElementById("selectRows") as HTMLSelectElement;
+    updateSelectedRows(Number(selected.value))
+    updateFrom(0)
+  }
+
+
+/**
+ * 
+ * update Data when Click On record 
+ * 
+ */
+  function justLogic(value) {
+    if(allUsers.length < selectedRows){}
+    else{
+      let emptyArray = []
+    loopNumber = selectedRows * value //4
+    let a = loopNumber
+
+    if(loopNumber < allUsers.length){
+      while (loopNumber-selectedRows  < a ) {
+        emptyArray.push(allUsers[loopNumber-selectedRows])
+        loopNumber = loopNumber + 1
+      }
+      updateSeeableUsers(emptyArray)
+      updateFrom(a)
+    }
+    else{
+      while (loopNumber-selectedRows  < allUsers.length ) {
+        emptyArray.push(allUsers[loopNumber-selectedRows])
+        loopNumber = loopNumber + 1
+      }
+      updateSeeableUsers(emptyArray)
+      updateFrom(a)
+
+    }
+    }
+  
+  }
+
+
+  /**
+     * 
+     *  hooks
+     */
   useEffect(() => {
     updateselectedrows()
-    next()
   }, [])
   useEffect(() => {
+    getRecordNumber()
     next()
   }, [selectedRows])
+  useEffect(() => {
+    updateFrom(0)
+    next()
+  }, [allUsers])
+
   return (
     <>
-    <div className="fixed w-[100vw] h-[100vh ">
-      <img src="https://play.tailwindcss.com/img/beams.jpg" className="object-cover w-[100vw] h-[100vh]"/>
-    </div>
+      <div className="fixed w-[100vw] h-[100vh ">
+        <img src="https://play.tailwindcss.com/img/beams.jpg" className="object-cover w-[100vw] h-[100vh]" />
+      </div>
       <main className="flex justify-center">
         <div className="shadowFull rounded-md  w-[94vw] flex flex-col  justify-center relative mt-6">
           <div className="flex justify-between items-start pt-4">
@@ -255,8 +376,16 @@ function HomePage({ from, updateSelectedRows, updateFrom, selectedRows,
                 prev()
               }}>
                 <a>Prev</a>
-              </div>
-              <div className="flex justify-center items-center px-3 h-fit w-fit py-1 rounded-lg border border-blue-300 text-sm
+              </div >
+              {
+                recordData.map((data) => {
+                  return <div onClick={() => { justLogic(data.value) }} className="bg-blue-500
+                  hidden lg:flex text-white w-8 h-8 rounded-full 
+                   items-center justify-center text-center text-sm">{data.value}</div>
+                })
+
+              }
+              <div id="next" className="flex justify-center items-center px-3 h-fit w-fit py-1 rounded-lg border border-blue-300 text-sm
             cursor-pointer" onClick={() => {
                   next()
                 }}>
