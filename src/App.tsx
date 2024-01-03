@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import users from "./user";
 function App() {
@@ -6,7 +6,7 @@ function App() {
   let [seeableUsers, updateSeeableUsers] = useState([])
   let [selectedRows, updateSelectedRows] = useState(0)
   let [from, updateFrom] = useState(0)
-  let [addUserClicked, updateAddUserClicked] = useState()
+
   let [userClickerd, updateUserClicked] = useState(false)
   function addUser(userId, userName, emailId, mobileNo, address) {
     if (userId === null || userName === null || emailId === null || mobileNo === null || addUser === null) {
