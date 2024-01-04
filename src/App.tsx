@@ -9,11 +9,6 @@ function App() {
 
   let [userClickerd, updateUserClicked] = useState(false)
   function addUser(userId, userName, emailId, mobileNo, address) {
-    const validateEmail = (email) => {
-      return email.match(
-        /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
-    };
     if (userId === null || userName === null || emailId === null || mobileNo === null || address === null) {
       alert("Please Fill All Fields")
     }
@@ -205,7 +200,7 @@ function HomePage({ from, updateSelectedRows, updateFrom, selectedRows,
   }
 /**
  * 
- * recordNumber
+ * get recordNumber
  */
   function getRecordNumber() {
     let emptyArray = []
@@ -245,7 +240,7 @@ function HomePage({ from, updateSelectedRows, updateFrom, selectedRows,
     if(allUsers.length < selectedRows){}
     else{
       let emptyArray = []
-    loopNumber = selectedRows * value //4
+    loopNumber = selectedRows * value 
     let a = loopNumber
 
     if(loopNumber < allUsers.length){
@@ -263,7 +258,7 @@ function HomePage({ from, updateSelectedRows, updateFrom, selectedRows,
       }
       updateSeeableUsers(emptyArray)
       updateFrom(a)
-
+ 
     }
     }
   
@@ -272,7 +267,7 @@ function HomePage({ from, updateSelectedRows, updateFrom, selectedRows,
 
   /**
      * 
-     *  hooks
+     *  individual use effect hooks
      */
   useEffect(() => {
     updateselectedrows()
